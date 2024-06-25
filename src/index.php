@@ -73,6 +73,17 @@
             </div>
           </div>
         </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body text-center">
+              <h5 class="card-title">Actores/as</h5>
+              <p class="card-text">
+                Listado y gestión de los actores/as creados en BBDD.
+              </p>
+              <a class="btn btn-primary" href="views/actors/list.php">Listado de actores/as</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </body>
