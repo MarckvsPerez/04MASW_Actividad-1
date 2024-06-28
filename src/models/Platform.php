@@ -1,134 +1,155 @@
 <?php
-    class Platform {
-        private $id;
-        private $name;
+class Platform
+{
+    private $id;
+    private $name;
 
-        public function __construct($idPlatform = null, $namePlatform = null)
-        {
-            if ($idPlatform != null) {
-                $this->id = $idPlatform;
-            }
-            if ($namePlatform != null) {
-                $this->name = $namePlatform;
-            }
+    public function __construct($idPlatform = null, $namePlatform = null)
+    {
+        if ($idPlatform != null) {
+            $this->id = $idPlatform;
         }
-
-
-
-        public function getId() {
-            return $this->id;
+        if ($namePlatform != null) {
+            $this->name = $namePlatform;
         }
+    }
 
 
-        public function setId($id) {
-            $this->id=$id;
-        }
+
+    public function getId()
+    {
+        return $this->id;
+    }
 
 
-        public function getName() {
-            return $this->name;
-        }
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
 
 
-        public function setName($name) {
-            $this->name=$name;
-        }
+    public function getName()
+    {
+        return $this->name;
+    }
 
-        private static function initConnectionDb() {
-            $db_host = 'localhost';
-            $db_user = 'root';
-            $db_password = '';
-            $db_db = 'actividad_1';
 
-            $mysqli = @new mysqli (
-                $db_host,
-                $db_user,
-                $db_password,
-                $db_db
-            );
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
 
-            if ($mysqli->connect_error) {
-                die('Error: '.
+    private static function initConnectionDb()
+    {
+        $db_host = 'localhost';
+        $db_user = 'root';
+        $db_password = '';
+        $db_db = 'actividad_1';
+
+        $mysqli = @new mysqli(
+            $db_host,
+            $db_user,
+            $db_password,
+            $db_db
+        );
+
+        if ($mysqli->connect_error) {
+            die('Error: ' .
                 $mysqli->connect_error);
-            }
-
-            return $mysqli;
         }
 
-        public function getAll() {
-            $mysqli = $this-> initConnectionDb();
+        return $mysqli;
+    }
 
-            $query = $mysqli->query("SELECT * FROM platforms");
-            
-            $listPlatforms = [];
-            foreach($query as $item) {
-                $itemObject = new Platform($item['id'], $item['name']);
-                array_push($listPlatforms, $itemObject);
-            }
+    public function getAll()
+    {
+        $mysqli = $this->initConnectionDb();
 
-            $mysqli->close();
+        $query = $mysqli->query("SELECT * FROM platforms");
 
-            return $listPlatforms;
+        $listPlatforms = [];
+        foreach ($query as $item) {
+            $itemObject = new Platform($item['id'], $item['name']);
+            array_push($listPlatforms, $itemObject);
         }
 
-        public static function getItem($platformId) {
-            $mysqli = Platform::initConnectionDb();
+        $mysqli->close();
 
-            $query = $mysqli->query("SELECT * FROM platforms WHERE id = $platformId");
+        return $listPlatforms;
+    }
 
-            $platformObject = null;
-            foreach($query as $item) {
-                $platformObject = new Platform($item['id'], $item['name']);
-            }            
+    public static function getItem($platformId)
+    {
+        $mysqli = Platform::initConnectionDb();
 
-            $mysqli->close();
+        $query = $mysqli->query("SELECT * FROM platforms WHERE id = $platformId");
 
-            return $platformObject;
+        $platformObject = null;
+        foreach ($query as $item) {
+            $platformObject = new Platform($item['id'], $item['name']);
         }
 
-        public static function store($platformName) {
-            $mysqli = Platform::initConnectionDb();
+        $mysqli->close();
 
-            $platformCreated = false;
-            if($query = $mysqli->query("INSERT INTO platforms (name) VALUE ('$platformName')")) {
-                $platformCreated = true;
-            }
+        return $platformObject;
+    }
 
-            $mysqli->close();
+    public static function store($platformName)
+    {
+        $mysqli = Platform::initConnectionDb();
 
-            return $platformCreated;
-
+        $platformCreated = false;
+        if ($query = $mysqli->query("INSERT INTO platforms (name) VALUE ('$platformName')")) {
+            $platformCreated = true;
         }
 
+        $mysqli->close();
 
-        public static function update($platformId, $platformName) {
-            $mysqli = Platform::initConnectionDb();
+        return $platformCreated;
+    }
 
-            $platformUpdated = false;
-            if($mysqli->query("UPDATE platforms set name = '$platformName' where id = $platformId")) {
-                $platformUpdated = true;
-            }            
 
-            $mysqli->close();
+    public static function update($platformId, $platformName)
+    {
+        $mysqli = Platform::initConnectionDb();
 
-            return $platformUpdated;
-
+        $platformUpdated = false;
+        if ($mysqli->query("UPDATE platforms set name = '$platformName' where id = $platformId")) {
+            $platformUpdated = true;
         }
 
+        $mysqli->close();
 
-        public static function delete($platformId) {
-            $mysqli = Platform::initConnectionDb();
+        return $platformUpdated;
+    }
 
-            $platformDeleted = false;
+    public static function hasSeries($platformId)
+    {
+        $mysqli = Platform::initConnectionDb();
 
-            if ($query = $mysqli->query("DELETE FROM platforms WHERE id = $platformId")) {
-                $platformDeleted = true;
-            }   
+        $query = $mysqli->query("SELECT COUNT(*) as series_count FROM series WHERE id_platform = $platformId");
+        $result = $query->fetch_assoc();
+        $mysqli->close();
 
-            $mysqli->close();
+        return $result['series_count'] > 0;
+    }
 
-            return $platformDeleted;
+    public static function delete($platformId)
+    {
+        $mysqli = Platform::initConnectionDb();
+
+        if (self::hasSeries($platformId)) {
+            return 'has_series';
         }
 
+        $platformDeleted = false;
+
+        if ($query = $mysqli->query("DELETE FROM platforms WHERE id = $platformId")) {
+            $platformDeleted = true;
+        }
+
+        $mysqli->close();
+
+        return $platformDeleted;
+    }
 }
-?>

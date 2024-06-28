@@ -66,9 +66,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirmDelete'])) {
             </form>
         <?php } else { ?>
             <div class="row">
-                <?php if ($platformDeleted) { ?>
+                <?php if ($platformDeleted === true) { ?>
                     <div class="alert alert-success" role="alert">
                         Plataforma borrada correctamente. <br><a href="list.php">Volver al listado de plataformas</a>
+                    </div>
+                <?php } elseif ($platformDeleted === 'has_series') { ?>
+                    <div class="alert alert-danger" role="alert">
+                        No se puede borrar la plataforma porque tiene una serie asociada. <br><a href="list.php">Volver al listado de plataformas</a>
                     </div>
                 <?php } else { ?>
                     <div class="alert alert-danger" role="alert">
