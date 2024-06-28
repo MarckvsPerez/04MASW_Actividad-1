@@ -165,7 +165,7 @@ class Directors
 
         $directorDeleted = false;
 
-        if ($query = $mysqli->query("DELETE FROM platforms WHERE id = $id")) {
+        if ($query = $mysqli->query("DELETE FROM directors WHERE id = $id")) {
             $directorDeleted = true;
         }
 

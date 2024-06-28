@@ -3,6 +3,7 @@ require_once('../../controllers/SeriesController.php');
 require_once('../../controllers/ActorsController.php');
 require_once('../../controllers/DirectorsController.php');
 require_once('../../controllers/LanguagesController.php');
+require_once('../../controllers/PlatformController.php');
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -87,6 +88,9 @@ require_once('../../controllers/LanguagesController.php');
                     <div class="row row-cols-1 row-cols-md-3 g-4">
                         <?php
                         foreach ($serieList as $serie) {
+                            $platform = getPlatform($serie->getplatform());
+                            $platformName = $platform ? $platform->getName() : 'Desconocido';
+
                             $actor = getActor($serie->getActor());
                             $actorName = $actor ? $actor->getName() : 'Desconocido';
                             $actorSurname = $actor ? $actor->getSurname() : 'Desconocido';
@@ -106,6 +110,9 @@ require_once('../../controllers/LanguagesController.php');
                                     <div class="card-body text-center">
                                         <h5 class="card-title"><?php echo $serie->getTitle(); ?></h5>
                                         <p class="card-text">ID: <?php echo $serie->getId(); ?></p>
+
+                                        <hr>
+                                        <p class="card-text">Plataforma: <?php echo $platformName; ?></p>
 
                                         <hr>
                                         <p class="card-text">Director: <?php echo $directorName ?> <?php echo $directorSurname ?></p>
