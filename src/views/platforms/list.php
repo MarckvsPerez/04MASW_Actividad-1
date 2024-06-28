@@ -126,8 +126,8 @@ require_once('../../controllers/PlatformController.php');
                                     <div class="card-body text-center">
                                         <h5 class="card-title"><?php echo $platform->getName(); ?></h5>
                                         <p class="card-text">ID: <?php echo $platform->getId(); ?></p>
-                                        <div class="btn-group" role="group" aria-label="Platform">
-                                            <a class="btn btn-success" href="edit.php?id=<?php echo $platform->getId(); ?>">Editar</a>
+                                        <div class="btn" role="group" aria-label="Platform">
+                                            <a class="btn btn-success mx-2" href="edit.php?id=<?php echo $platform->getId(); ?>">Editar</a>
                                             <form name="delete_platform" action="delete.php" method="POST" style="display: inline;">
                                                 <input type="hidden" name="platformId" value="<?php echo $platform->getId(); ?>" />
                                                 <button type="submit" class="btn btn-danger">Borrar</button>

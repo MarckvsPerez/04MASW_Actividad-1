@@ -48,7 +48,7 @@ class Language
         $this->name = $name;
     }
 
-    function initConnectionDb()
+    private static function initConnectionDb()
     {
         $db_host = 'localhost';
         $db_user = 'root';
@@ -85,21 +85,20 @@ class Language
         return $listLanguages;
     }
 
-    public function getById($idLanguage)
+    public static function getItem($id)
     {
-        $mysqli = $this->initConnectionDb();
+        $mysqli = Language::initConnectionDb();
 
-        $stmt = $mysqli->prepare("SELECT * FROM languages WHERE id = ?");
-        $stmt->bind_param("i", $idLanguage);
-        $stmt->execute();
-        $result = $stmt->get_result()->fetch_assoc();
+        $query = $mysqli->query("SELECT * FROM languages WHERE id = $id");
 
-        $language = new Language($result['id'], $result['name'], $result['iso_code']);
+        $languageObject = null;
+        foreach ($query as $item) {
+            $languageObject = new Language($item['id'], $item['name'], $item['iso_code']);
+        }
 
-        $stmt->close();
         $mysqli->close();
 
-        return $language;
+        return $languageObject;
     }
 
     public function create($name, $iso_code)
@@ -117,19 +116,41 @@ class Language
         return $result;
     }
 
-    public function delete($idLanguage)
+    public static function hasSeries($id)
     {
-        $mysqli = $this->initConnectionDb();
+        $mysqli = self::initConnectionDb();
 
-        $stmt = $mysqli->prepare("DELETE FROM languages WHERE id = ?");
-        $stmt->bind_param("i", $idLanguage);
+        $stmt = $mysqli->prepare("SELECT COUNT(*) as series_count FROM series WHERE audio = ? OR subtitle = ?");
+        $stmt->bind_param("ii", $id, $id);
 
-        $result = $stmt->execute();
+        $stmt->execute();
+
+        $stmt->bind_result($series_count);
+        $stmt->fetch();
 
         $stmt->close();
         $mysqli->close();
 
-        return $result;
+        return $series_count > 0;
+    }
+
+    public static function delete($idLanguage)
+    {
+        $mysqli = Language::initConnectionDb();
+
+        if (self::hasSeries($idLanguage)) {
+            return 'has_series';
+        }
+
+        $platformDeleted = false;
+
+        if ($query = $mysqli->query("DELETE FROM languages WHERE id = $idLanguage")) {
+            $platformDeleted = true;
+        }
+
+        $mysqli->close();
+
+        return $platformDeleted;
     }
 
     public function update($idLanguage, $name, $iso_code)

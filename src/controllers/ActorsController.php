@@ -23,5 +23,11 @@ function updateActor($id, $name, $surname, $birthday, $nationality)
 
 function deleteActor($id)
 {
-    return Actors::delete($id);
+    $deleteResult = Actors::delete($id);
+
+    if ($deleteResult === 'has_series') {
+        return 'has_series';
+    }
+
+    return $deleteResult;
 }

@@ -23,5 +23,11 @@ function updateDirector($id, $name, $surname, $birthday, $nationality)
 
 function deleteDirector($id)
 {
-    return Directors::delete($id);
+    $deleteResult = Directors::delete($id);
+
+    if ($deleteResult === 'has_series') {
+        return 'has_series';
+    }
+
+    return $deleteResult;
 }

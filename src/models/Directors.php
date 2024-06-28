@@ -144,18 +144,33 @@ class Directors
         return $result;
     }
 
-    public static function delete($id)
+    public static function hasSeries($id)
     {
-        $mysqli = self::initConnectionDb();
+        $mysqli = Directors::initConnectionDb();
 
-        $query = $mysqli->prepare("DELETE FROM directors WHERE id = ?");
-        $query->bind_param("i", $id);
-
-        $result = $query->execute();
-
-        $query->close();
+        $query = $mysqli->query("SELECT COUNT(*) as series_count FROM series WHERE id_director = $id");
+        $result = $query->fetch_assoc();
         $mysqli->close();
 
-        return $result;
+        return $result['series_count'] > 0;
+    }
+
+    public static function delete($id)
+    {
+        $mysqli = Directors::initConnectionDb();
+
+        if (self::hasSeries($id)) {
+            return 'has_series';
+        }
+
+        $directorDeleted = false;
+
+        if ($query = $mysqli->query("DELETE FROM platforms WHERE id = $id")) {
+            $directorDeleted = true;
+        }
+
+        $mysqli->close();
+
+        return $directorDeleted;
     }
 }

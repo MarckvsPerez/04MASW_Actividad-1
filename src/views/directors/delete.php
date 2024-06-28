@@ -55,9 +55,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirmDelete'])) {
             </form>
         <?php } else { ?>
             <div class="row">
-                <?php if ($directorDelete) { ?>
+                <?php if ($directorDelete === true) { ?>
                     <div class="alert alert-success" role="alert">
                         Director borrada correctamente. <br><a href="list.php">Volver al listado de directores</a>
+                    </div>
+                <?php } elseif ($directorDelete === 'has_series') { ?>
+                    <div class="alert alert-danger" role="alert">
+                        No se puede borrar el director porque tiene una serie asociada. <br><a href="list.php">Volver al listado de directores</a>
                     </div>
                 <?php } else { ?>
                     <div class="alert alert-danger" role="alert">

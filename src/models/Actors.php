@@ -130,17 +130,33 @@ class Actors
         return $result;
     }
 
+    public static function hasSeries($id)
+    {
+        $mysqli = Actors::initConnectionDb();
+
+        $query = $mysqli->query("SELECT COUNT(*) as series_count FROM series WHERE id_actor = $id");
+        $result = $query->fetch_assoc();
+        $mysqli->close();
+
+        return $result['series_count'] > 0;
+    }
+
     public static function delete($id)
     {
         $mysqli = self::initConnectionDb();
-        $query = $mysqli->prepare("DELETE FROM actors WHERE id = ?");
-        $query->bind_param("i", $id);
 
-        $result = $query->execute();
+        if (self::hasSeries($id)) {
+            return 'has_series';
+        }
 
-        $query->close();
+        $actorDeleted = false;
+
+        if ($query = $mysqli->query("DELETE FROM actors WHERE id = $id")) {
+            $platformDeleted = true;
+        }
+
         $mysqli->close();
 
-        return $result;
+        return $platformDeleted;
     }
 }

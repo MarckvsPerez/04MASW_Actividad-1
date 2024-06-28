@@ -55,9 +55,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirmDelete'])) {
             </form>
         <?php } else { ?>
             <div class="row">
-                <?php if ($actorDelete) { ?>
+                <?php if ($actorDelete === true) { ?>
                     <div class="alert alert-success" role="alert">
                         Actor borrado correctamente. <br><a href="list.php">Volver al listado de actores</a>
+                    </div>
+                <?php  } elseif ($actorDelete === 'has_series') { ?>
+                    <div class="alert alert-danger" role="alert">
+                        No se puede borrar el actor porque tiene una serie asociada. <br><a href="list.php">Volver al listado de actores</a>
                     </div>
                 <?php } else { ?>
                     <div class="alert alert-danger" role="alert">

@@ -187,15 +187,19 @@ class Serie
     }
 
 
-    public static function update($serieId, $serieTitle)
+    public static function update($serieId, $serieTitle, $platform, $director, $actor, $audio, $subtitle)
     {
-        $mysqli = Serie::initConnectionDb();
+        $mysqli = self::initConnectionDb();
+
+        $stmt = $mysqli->prepare("UPDATE series SET title = ?, id_platform = ?, id_director = ?, id_actor = ?, audio = ?, subtitle = ? WHERE id = ?");
+        $stmt->bind_param("ssssssi", $serieTitle, $platform, $director, $actor, $audio, $subtitle, $serieId);
 
         $serieUpdated = false;
-        if ($mysqli->query("UPDATE series set title = '$serieTitle' where id = $serieId")) {
+        if ($stmt->execute()) {
             $serieUpdated = true;
         }
 
+        $stmt->close();
         $mysqli->close();
 
         return $serieUpdated;
