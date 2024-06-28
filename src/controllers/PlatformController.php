@@ -9,8 +9,20 @@
         return $platformList;
     }
 
+    function getPlatform($platformId) {
+        return Platform::getItem($platformId);
+    }
+
     function storePlatform($platformName) {
         return Platform::store($platformName);
+    }
+
+    function updatePlatform($platformId, $platformName) {
+        return Platform::update($platformId, $platformName);
+    }
+
+    function deletePlatform($platformId) {
+        return Platform::delete($platformId);
     }
 
 

@@ -1,30 +1,27 @@
 <?php
-    require_once('../../models/Actors.php');
+require_once('../../models/Actors.php');
 
+function listActors()
+{
+    return Actors::getAll();
+}
 
-    function listActors() {
-        $model = new Actors ();
-        $listActors = $model->getAll();
+function getActor($actorId)
+{
+    return Actors::getItem($actorId);
+}
 
-        return $listActors;
-    }
+function storeActor($name, $surname, $birthday, $nationality)
+{
+    return Actors::store($name, $surname, $birthday, $nationality);
+}
 
-    function getPlatform($platformId) {
-        return Platform::getItem($platformId);
-    }
+function updateActor($id, $name, $surname, $birthday, $nationality)
+{
+    return Actors::update($id, $name, $surname, $birthday, $nationality);
+}
 
-    function storeActors($nameActors, $surnameActor, $birthdayActor, $nationalityActor) {
-        return Actors::storeActors($nameActors, $surnameActor, $birthdayActor, $nationalityActor);
-    }
-
-    function updatePlatform($platformId, $platformName) {
-        return Platform::update($platformId, $platformName);
-    }
-
-    function deletePlatform($platformId) {
-        return Platform::delete($platformId);
-    }
-
-
-
-?>
+function deleteActor($id)
+{
+    return Actors::delete($id);
+}

@@ -10,11 +10,21 @@
                 <li class="nav-item">
                     <a class="nav-link" href="<?php echo $base_url; ?>/views/platforms/list.php">Plataformas</a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="<?php echo $base_url; ?>/views/series/list.php">Series</a>
+                </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="<?php echo $base_url; ?>/views/languages/list.php">Idiomas</a>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="<?php echo $base_url; ?>/views/directors/list.php">Directores/as</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="<?php echo $base_url; ?>/views/actors/list.php">Actores</a>
                 </li>
             </ul>
         </div>

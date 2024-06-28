@@ -13,6 +13,7 @@ require_once('../../controllers/ActorsController.php');
 </head>
 
 <body>
+    <?php include('../../router/nav.php'); ?>
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -33,18 +34,24 @@ require_once('../../controllers/ActorsController.php');
                             <th>Id</th>
                             <th>Nombre</th>
                             <th>Acciones</th>
+                            <th>Birthdate</th>
+                            <th>Nationality</th>
+                            <th class="text-end">Acciones</th>
                         </thead>
                         <tbody>
                             <?php foreach ($actorsList as $actor) { ?>
                                 <tr>
-                                    <td><?php echo $actor->getIdActors(); ?></td>
-                                    <td><?php echo $actor->getNameActors(); ?></td>
-                                    <td>
+                                    <td><?php echo $actor->getId(); ?></td>
+                                    <td><?php echo $actor->getName(); ?></td>
+                                    <td><?php echo $actor->getSurname(); ?></td>
+                                    <td><?php echo $actor->getBirthday(); ?></td>
+                                    <td><?php echo $actor->getNationality(); ?></td>
+                                    <td class="text-end">
                                         <div class="btn-group" role="group" aria-label="Actors">
-                                            <a class="btn btn-success" href="edit.php?id=<?php echo $actor->getIdActors(); ?>">Editar</a>
+                                            <a class="btn btn-success" href="edit.php?id=<?php echo $actor->getId(); ?>">Editar</a>
                                             &nbsp;&nbsp;
                                             <form name="delete_actor" action="delete.php" method="POST" style="display: inline;">
-                                                <input type="hidden" name="actorId" value="<?php echo $actor->getIdActors(); ?>" />
+                                                <input type="hidden" name="actorId" value="<?php echo $actor->getId(); ?>" />
                                                 <button type="submit" class="btn btn-danger">Borrar</button>
                                             </form>
                                         </div>

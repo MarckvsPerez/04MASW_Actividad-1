@@ -71,6 +71,21 @@
             return $listPlatforms;
         }
 
+        public static function getItem($platformId) {
+            $mysqli = Platform::initConnectionDb();
+
+            $query = $mysqli->query("SELECT * FROM platforms WHERE id = $platformId");
+
+            $platformObject = null;
+            foreach($query as $item) {
+                $platformObject = new Platform($item['id'], $item['name']);
+            }            
+
+            $mysqli->close();
+
+            return $platformObject;
+        }
+
         public static function store($platformName) {
             $mysqli = Platform::initConnectionDb();
 
@@ -79,13 +94,40 @@
                 $platformCreated = true;
             }
 
-
-            
-
             $mysqli->close();
 
             return $platformCreated;
 
+        }
+
+
+        public static function update($platformId, $platformName) {
+            $mysqli = Platform::initConnectionDb();
+
+            $platformUpdated = false;
+            if($mysqli->query("UPDATE platforms set name = '$platformName' where id = $platformId")) {
+                $platformUpdated = true;
+            }            
+
+            $mysqli->close();
+
+            return $platformUpdated;
+
+        }
+
+
+        public static function delete($platformId) {
+            $mysqli = Platform::initConnectionDb();
+
+            $platformDeleted = false;
+
+            if ($query = $mysqli->query("DELETE FROM platforms WHERE id = $platformId")) {
+                $platformDeleted = true;
+            }   
+
+            $mysqli->close();
+
+            return $platformDeleted;
         }
 
 }

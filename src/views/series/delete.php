@@ -1,11 +1,11 @@
 <?php
-require_once('../../controllers/ActorsController.php');
+require_once('../../controllers/SeriesController.php');
 
-$actorDelete = null;
-$actorId = isset($_GET['actorId']) ? $_GET['actorId'] : (isset($_POST['actorId']) ? $_POST['actorId'] : null);
+$serieDeleted = null;
+$serieId = isset($_GET['serieId']) ? $_GET['serieId'] : (isset($_POST['serieId']) ? $_POST['serieId'] : null);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirmDelete'])) {
-    $actorDelete = deleteActor($actorId);
+    $serieDeleted = deleteSerie($serieId);
 }
 ?>
 <!DOCTYPE html>
@@ -44,9 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirmDelete'])) {
 <body>
     <?php include('../../router/nav.php'); ?>
     <div class="container">
-        <?php if ($actorDelete === null && !isset($_POST['confirmDelete'])) { ?>
+        <?php if ($serieDeleted === null && !isset($_POST['confirmDelete'])) { ?>
             <form method="post" action="delete.php">
-                <input type="hidden" name="actorId" value="<?php echo htmlspecialchars($actorId); ?>">
+                <input type="hidden" name="serieId" value="<?php echo htmlspecialchars($serieId); ?>">
                 <div class="mb-3">
                     <p>¿Estás seguro de que deseas eliminar esta serie?</p>
                     <button type="submit" name="confirmDelete" class="btn btn-danger">Confirmar Borrar</button>
@@ -55,13 +55,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirmDelete'])) {
             </form>
         <?php } else { ?>
             <div class="row">
-                <?php if ($actorDelete) { ?>
+                <?php if ($serieDeleted) { ?>
                     <div class="alert alert-success" role="alert">
-                        Actor borrado correctamente. <br><a href="list.php">Volver al listado de actores</a>
+                        Serie borrada correctamente. <br><a href="list.php">Volver al listado de series</a>
                     </div>
                 <?php } else { ?>
                     <div class="alert alert-danger" role="alert">
-                        El actor no se ha borrado correctamente.<br><a href="list.php">Volver a intentarlo.</a>
+                        La serie no se ha borrado correctamente.<br><a href="list.php">Volver a intentarlo.</a>
                     </div>
                 <?php } ?>
             </div>

@@ -1,159 +1,146 @@
 <?php
 class Actors
 {
-    private $idActors;
-    private $nameActors;
-    private $birthdayActor;
-    private $surnameActor;
-    private $nationalityActor;
+    private $id;
+    private $name;
+    private $birthday;
+    private $surname;
+    private $nationality;
 
-    public function __construct($idActors = null, $nameActors = null, $birthdayActor = null, $surnameActor = null, $nationalityActor = null)
+    public function __construct($id = null, $name = null, $birthday = null, $surname = null, $nationality = null)
     {
-        $this->idActors = $idActors;
-        $this->nameActors = $nameActors;
-        $this->birthdayActor = $birthdayActor;
-        $this->surnameActor = $surnameActor;
-        $this->nationalityActor = $nationalityActor;
+        $this->id = $id;
+        $this->name = $name;
+        $this->birthday = $birthday;
+        $this->surname = $surname;
+        $this->nationality = $nationality;
     }
 
-
-
-    public function getIdActors() { return $this->idActors; }
-    public function getNameActors() { return $this->nameActors; }
-    public function getBirthdayActor() { return $this->birthdayActor; }
-    public function getSurnameActor() { return $this->surnameActor; }
-    public function getNationalityActor() { return $this->nationalityActor; }
-
-
-    public function setIdActors($idActors)
+    public function getId()
     {
-        $this->idActors = $idActors;
+        return $this->id;
+    }
+    public function getName()
+    {
+        return $this->name;
+    }
+    public function getBirthday()
+    {
+        return $this->birthday;
+    }
+    public function getSurname()
+    {
+        return $this->surname;
+    }
+    public function getNationality()
+    {
+        return $this->nationality;
     }
 
-    public function setName($nameActors)
+    public function setId($id)
     {
-        $this->nameActors = $nameActors;
+        $this->id = $id;
+    }
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+    public function setSurname($surname)
+    {
+        $this->surname = $surname;
+    }
+    public function setBirthday($birthday)
+    {
+        $this->birthday = $birthday;
+    }
+    public function setNationality($nationality)
+    {
+        $this->nationality = $nationality;
     }
 
-    public function setSurName($surnameActor)
-    {
-        $this->surnameActor = $surnameActor;
-    }
-
-    public function setBirthdayActor($birthdayActor)
-    {
-        $this->birthdayActor = $birthdayActor;
-    }
-
-
-    public function setNationalityActor($nationalityActor)
-    {
-        $this->nationalityActor = $nationalityActor;
-    }
-
-
-    public static function initConnectionDb()
+    private static function initConnectionDb()
     {
         $db_host = 'localhost';
         $db_user = 'root';
         $db_password = '';
         $db_db = 'actividad_1';
 
-        $mysqli = @new mysqli(
-            $db_host,
-            $db_user,
-            $db_password,
-            $db_db
-        );
+        $mysqli = new mysqli($db_host, $db_user, $db_password, $db_db);
 
         if ($mysqli->connect_error) {
-            die('Error: ' .
-                $mysqli->connect_error);
+            die('Error: ' . $mysqli->connect_error);
         }
 
         return $mysqli;
     }
 
-    public function getAll()
+    public static function getAll()
     {
         $mysqli = self::initConnectionDb();
         $query = $mysqli->query("SELECT * FROM actors");
 
         $listActors = [];
-        foreach ($query as $item) {
-            $actor = new Actors($item['id'], $item['name'], $item['birthdate'], $item['surname'], $item['nationality']);
-            array_push($listActors, $actor);
+        while ($item = $query->fetch_assoc()) {
+            $listActors[] = new self($item['id'], $item['name'], $item['birthdate'], $item['surname'], $item['nationality']);
         }
 
         $mysqli->close();
         return $listActors;
     }
 
-
-
-    public static function getItem($idActors)
+    public static function getItem($id)
     {
         $mysqli = self::initConnectionDb();
-    
-        $query = $mysqli->query("SELECT * FROM actors WHERE id = $idActors");
-    
-        $actorsObject = null;
-        foreach ($query as $item) {
-            $actorsObject = new Actors($item['id'], $item['name'], $item['birthdate'], $item['surname'], $item['nationality']);
+        $query = $mysqli->query("SELECT * FROM actors WHERE id = $id");
+
+        $actor = null;
+        if ($item = $query->fetch_assoc()) {
+            $actor = new self($item['id'], $item['name'], $item['birthdate'], $item['surname'], $item['nationality']);
         }
-    
+
         $mysqli->close();
-    
-        return $actorsObject;
+        return $actor;
     }
 
-    public static function storeActors($nameActors, $surnameActor, $birthdayActor, $nationalityActor)
+    public static function store($name, $surname, $birthday, $nationality)
     {
         $mysqli = self::initConnectionDb();
-    
-        $actorsCreated = false;
-    
         $query = $mysqli->prepare("INSERT INTO actors (name, surname, birthdate, nationality) VALUES (?, ?, ?, ?)");
-        $query->bind_param("ssss", $nameActors, $surnameActor, $birthdayActor, $nationalityActor);
-    
-        if ($query->execute()) {
-            $actorsCreated = true;
-        }
-    
+        $query->bind_param("ssss", $name, $surname, $birthday, $nationality);
+
+        $result = $query->execute();
+
         $query->close();
         $mysqli->close();
-    
-        return $actorsCreated;
+
+        return $result;
     }
 
-
-    public static function update($platformId, $platformName)
+    public static function update($id, $name, $surname, $birthday, $nationality)
     {
-        $mysqli = Platform::initConnectionDb();
+        $mysqli = self::initConnectionDb();
+        $query = $mysqli->prepare("UPDATE actors SET name = ?, surname = ?, birthdate = ?, nationality = ? WHERE id = ?");
+        $query->bind_param("ssssi", $name, $surname, $birthday, $nationality, $id);
 
-        $platformUpdated = false;
-        if ($mysqli->query("UPDATE platforms set name = '$platformName' where id = $platformId")) {
-            $platformUpdated = true;
-        }
+        $result = $query->execute();
 
+        $query->close();
         $mysqli->close();
 
-        return $platformUpdated;
+        return $result;
     }
 
-
-    public static function delete($platformId)
+    public static function delete($id)
     {
-        $mysqli = Platform::initConnectionDb();
+        $mysqli = self::initConnectionDb();
+        $query = $mysqli->prepare("DELETE FROM actors WHERE id = ?");
+        $query->bind_param("i", $id);
 
-        $platformDeleted = false;
+        $result = $query->execute();
 
-        if ($query = $mysqli->query("DELETE FROM platforms WHERE id = $platformId")) {
-            $platformDeleted = true;
-        }
-
+        $query->close();
         $mysqli->close();
 
-        return $platformDeleted;
+        return $result;
     }
 }
